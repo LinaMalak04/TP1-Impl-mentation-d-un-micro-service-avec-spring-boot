@@ -1,0 +1,41 @@
+### REST controller : all accounts
+GET http://localhost:8081/api/bankAccounts
+
+### REST controller : one account (replace {{id}})
+GET http://localhost:8081/api/bankAccounts/{{id}}
+
+### REST controller : new account
+POST http://localhost:8081/api/bankAccounts
+Content-Type: application/json
+
+{
+  "balance": 45000,
+  "currency": "MAD",
+  "type": "SAVING_ACCOUNT"
+}
+
+### REST controller : update an account
+PUT http://localhost:8081/api/bankAccounts/{{id}}
+Content-Type: application/json
+
+{
+  "balance": 99000
+}
+
+### REST controller : delete an account
+DELETE http://localhost:8081/api/bankAccounts/{{id}}
+
+### Spring Data REST : all accounts
+GET http://localhost:8081/bankAccounts
+
+### Spring Data REST : pagination
+GET http://localhost:8081/bankAccounts?page=0&size=3
+
+### Spring Data REST : projection p1 (id, type, balance)
+GET http://localhost:8081/bankAccounts?projection=p1
+
+### Spring Data REST : search by type
+GET http://localhost:8081/bankAccounts/search/byType?t=CURRENT_ACCOUNT
+
+### OpenAPI documentation
+GET http://localhost:8081/v3/api-docs
