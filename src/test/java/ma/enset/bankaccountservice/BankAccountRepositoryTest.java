@@ -23,9 +23,13 @@ class BankAccountRepositoryTest {
     @BeforeEach
     void setUp() {
         bankAccountRepository.deleteAll();
-        bankAccountRepository.save(new BankAccount("acc-1", new Date(), 5000.0, "MAD", AccountType.CURRENT_ACCOUNT));
-        bankAccountRepository.save(new BankAccount("acc-2", new Date(), 12000.0, "MAD", AccountType.SAVING_ACCOUNT));
-        bankAccountRepository.save(new BankAccount("acc-3", new Date(), 800.0, "EUR", AccountType.SAVING_ACCOUNT));
+        bankAccountRepository.save(account("acc-1", 5000.0, "MAD", AccountType.CURRENT_ACCOUNT));
+        bankAccountRepository.save(account("acc-2", 12000.0, "MAD", AccountType.SAVING_ACCOUNT));
+        bankAccountRepository.save(account("acc-3", 800.0, "EUR", AccountType.SAVING_ACCOUNT));
+    }
+
+    private BankAccount account(String id, double balance, String currency, AccountType type) {
+        return BankAccount.builder().id(id).createdAt(new Date()).balance(balance).currency(currency).type(type).build();
     }
 
     @Test

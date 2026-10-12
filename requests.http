@@ -39,3 +39,34 @@ GET http://localhost:8081/bankAccounts/search/byType?t=CURRENT_ACCOUNT
 
 ### OpenAPI documentation
 GET http://localhost:8081/v3/api-docs
+
+### GraphQL : all accounts with their customer
+POST http://localhost:8081/graphql
+Content-Type: application/json
+
+{
+  "query": "query { accountsList { id balance currency type customer { id name } } }"
+}
+
+### GraphQL : customers with their accounts
+POST http://localhost:8081/graphql
+Content-Type: application/json
+
+{
+  "query": "query { customers { id name bankAccounts { id balance type } } }"
+}
+
+### GraphQL : new account
+POST http://localhost:8081/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation($account: BankAccountDTO) { addAccount(bankAccount: $account) { id createdAt balance currency type } }",
+  "variables": {
+    "account": {
+      "balance": 7000,
+      "currency": "MAD",
+      "type": "SAVING_ACCOUNT"
+    }
+  }
+}

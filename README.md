@@ -4,20 +4,23 @@ Micro-service Spring Boot qui permet de gérer des comptes bancaires.
 
 ## Technologies
 
-Java 21, Spring Boot 3.5, Spring Web, Spring Data JPA, Spring Data REST, H2, Lombok,
-springdoc-openapi (Swagger UI).
+Java 21, Spring Boot 3.5, Spring Web, Spring Data JPA, Spring Data REST, Spring for GraphQL,
+H2, Lombok, springdoc-openapi (Swagger UI).
 
 ## Étapes réalisées
 
 1. Projet Spring Boot avec les dépendances Web, Spring Data JPA, H2, Lombok
 2. Entité JPA `BankAccount` (compte) : `id`, `createdAt`, `balance`, `currency`, `type`
 3. Interface `BankAccountRepository` basée sur Spring Data
-4. Test de la couche DAO : insertion de 10 comptes au démarrage (`CommandLineRunner`)
+4. Test de la couche DAO : insertion de comptes de test au démarrage (`CommandLineRunner`)
    et tests unitaires `BankAccountRepositoryTest` (`@DataJpaTest`)
 5. Web service RESTful `AccountRestController` (`/api/bankAccounts`)
 6. Test du micro-service avec un client REST (fichier [`requests.http`](requests.http), utilisable aussi dans Postman)
 7. Documentation Swagger des API REST
 8. API RESTful générée par Spring Data REST (`/bankAccounts`) avec la projection `p1`
+9. DTOs (`BankAccountRequestDTO`, `BankAccountResponseDTO`) et mapper `AccountMapper`
+10. Couche service (métier) : `AccountService` / `AccountServiceImpl`
+11. Web service GraphQL (`/graphql`) avec l'entité `Customer` associée aux comptes
 
 ## Démarrage
 
@@ -29,6 +32,7 @@ mvn spring-boot:run
 |------------------|------------------------------------------------|
 | Swagger UI       | http://localhost:8081/swagger-ui.html          |
 | OpenAPI (JSON)   | http://localhost:8081/v3/api-docs              |
+| GraphiQL         | http://localhost:8081/graphiql                 |
 | Console H2       | http://localhost:8081/h2-console (JDBC URL `jdbc:h2:mem:account-db`, utilisateur `sa`) |
 
 ## API REST (`AccountRestController`)
@@ -49,6 +53,25 @@ mvn spring-boot:run
 | `/bankAccounts?page=0&size=3`                      | Pagination                               |
 | `/bankAccounts?projection=p1`                      | Projection `p1` : `id`, `type`, `balance` |
 | `/bankAccounts/search/byType?t=CURRENT_ACCOUNT`    | Recherche par type de compte             |
+
+## API GraphQL
+
+Schéma : [`src/main/resources/graphql/schema.graphqls`](src/main/resources/graphql/schema.graphqls)
+
+```graphql
+query {
+  accountsList { id balance currency type customer { id name } }
+  customers { id name bankAccounts { id balance } }
+}
+
+mutation {
+  addAccount(bankAccount: { balance: 7000, currency: "MAD", type: "SAVING_ACCOUNT" }) {
+    id createdAt balance currency type
+  }
+}
+```
+
+Autres opérations : `bankAccountById(id)`, `updateAccount(id, bankAccount)`, `deleteAccount(id)`.
 
 ## Tests
 
